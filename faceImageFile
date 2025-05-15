@@ -1,0 +1,5 @@
+<input
+  type="file"
+  accept="image/*"
+  onChange={e => setFaceImageFile(e.target.files[0])}
+/>
