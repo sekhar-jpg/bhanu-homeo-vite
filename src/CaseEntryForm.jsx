@@ -500,4 +500,40 @@ const CaseEntryForm = () => {
   );
 };
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Create FormData and append all your form fields
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("age", age);
+  // append other fields similarly
+  formData.append("faceImage", faceImageFile);
+
+  try {
+    const response = await fetch("https://your-backend-url.onrender.com/submit-case", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit");
+    }
+
+    const result = await response.json();
+    alert("Case submitted successfully!");
+
+    // Reset form if needed
+    setName("");
+    setAge("");
+    // reset other fields...
+    setFaceImageFile(null);
+    // reset file input value — see next step
+
+  } catch (error) {
+    alert("Error submitting case");
+    console.error(error);
+  }
+};
+
 export default CaseEntryForm;
