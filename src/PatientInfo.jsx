@@ -4,63 +4,82 @@ const PatientInfo = ({ data = {}, onChange }) => {
   const handleInputChange = (e) => {
     onChange({
       ...data,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   return (
     <div style={{ marginBottom: '2rem' }}>
       <h2>Patient Information</h2>
-
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <input
-          type="text"
-          name="name"
-          value={data.name || ''}
-          onChange={handleInputChange}
-          placeholder="Patient Name"
-        />
+        <label>
+          Name:
+          <input
+            type="text"
+            name="name"
+            value={data.name || ''}
+            onChange={handleInputChange}
+            placeholder="Enter patient name"
+          />
+        </label>
 
-        <input
-          type="number"
-          name="age"
-          value={data.age || ''}
-          onChange={handleInputChange}
-          placeholder="Age"
-        />
+        <label>
+          Age:
+          <input
+            type="number"
+            name="age"
+            value={data.age || ''}
+            onChange={handleInputChange}
+            placeholder="Enter age"
+          />
+        </label>
 
-        <select
-          name="gender"
-          value={data.gender || ''}
-          onChange={handleInputChange}
-        >
-          <option value="">Select Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        </select>
+        <label>
+          Gender:
+          <select
+            name="gender"
+            value={data.gender || ''}
+            onChange={handleInputChange}
+          >
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
 
-        <input
-          type="tel"
-          name="phone"
-          value={data.phone || ''}
-          onChange={handleInputChange}
-          placeholder="Phone Number"
-        />
+        <label>
+          Phone Number:
+          <input
+            type="tel"
+            name="phone"
+            value={data.phone || ''}
+            onChange={handleInputChange}
+            placeholder="Enter phone number"
+          />
+        </label>
 
-        <textarea
-          name="address"
-          value={data.address || ''}
-          onChange={handleInputChange}
-          placeholder="Address"
-        />
+        <label>
+          Address:
+          <textarea
+            name="address"
+            value={data.address || ''}
+            onChange={handleInputChange}
+            placeholder="Enter address"
+            rows={3}
+            style={{ resize: 'vertical' }}
+          />
+        </label>
 
-        <input
-          type="date"
-          name="date"
-          value={data.date || ''}
-          onChange={handleInputChange}
-        />
+        <label>
+          Date:
+          <input
+            type="date"
+            name="date"
+            value={data.date || ''}
+            onChange={handleInputChange}
+          />
+        </label>
       </div>
     </div>
   );
