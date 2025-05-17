@@ -9,59 +9,59 @@ const PatientInfo = ({ data = {}, onChange }) => {
   };
 
   return (
-    <div style={{ marginBottom: 20, padding: 16, border: '1px solid #ccc', borderRadius: 8 }}>
+    <div style={{ marginBottom: '2rem' }}>
       <h2>Patient Information</h2>
 
-      <label>Patient Name:</label>
-      <input
-        type="text"
-        name="name"
-        value={data.name || ''}
-        onChange={handleInputChange}
-        placeholder="Enter patient name"
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <input
+          type="text"
+          name="name"
+          value={data.name || ''}
+          onChange={handleInputChange}
+          placeholder="Patient Name"
+        />
 
-      <label>Age:</label>
-      <input
-        type="number"
-        name="age"
-        value={data.age || ''}
-        onChange={handleInputChange}
-        placeholder="Enter age"
-      />
+        <input
+          type="number"
+          name="age"
+          value={data.age || ''}
+          onChange={handleInputChange}
+          placeholder="Age"
+        />
 
-      <label>Gender:</label>
-      <select name="gender" value={data.gender || ''} onChange={handleInputChange}>
-        <option value="">Select gender</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Other">Other</option>
-      </select>
+        <select
+          name="gender"
+          value={data.gender || ''}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
 
-      <label>Phone Number:</label>
-      <input
-        type="tel"
-        name="phone"
-        value={data.phone || ''}
-        onChange={handleInputChange}
-        placeholder="Enter phone number"
-      />
+        <input
+          type="tel"
+          name="phone"
+          value={data.phone || ''}
+          onChange={handleInputChange}
+          placeholder="Phone Number"
+        />
 
-      <label>Address:</label>
-      <textarea
-        name="address"
-        value={data.address || ''}
-        onChange={handleInputChange}
-        placeholder="Enter address"
-      />
+        <textarea
+          name="address"
+          value={data.address || ''}
+          onChange={handleInputChange}
+          placeholder="Address"
+        />
 
-      <label>Date:</label>
-      <input
-        type="date"
-        name="date"
-        value={data.date || ''}
-        onChange={handleInputChange}
-      />
+        <input
+          type="date"
+          name="date"
+          value={data.date || ''}
+          onChange={handleInputChange}
+        />
+      </div>
     </div>
   );
 };
