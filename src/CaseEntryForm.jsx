@@ -40,10 +40,39 @@ const CaseEntryForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting full case data:', formData);
-    // Your submit logic here, e.g., send to backend for AI analysis & saving
+
+    try {
+      const formDataToSend = new FormData();
+
+      if (formData.faceImage) {
+        formDataToSend.append('faceImage', formData.faceImage);
+      }
+
+      for (const section in formData) {
+        if (section !== 'faceImage') {
+          formDataToSend.append(section, JSON.stringify(formData[section]));
+        }
+      }
+
+      const response = await fetch('/submit-case', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('Case submitted successfully!');
+        // Optional: Reset form here if needed
+        // setFormData({...}); // reset to initial state
+      } else {
+        alert('Submission failed: ' + (result.message || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('Error submitting case: ' + error.message);
+    }
   };
 
   return (
@@ -56,14 +85,8 @@ const CaseEntryForm = () => {
       <MentalGenerals data={formData.mentalGenerals} onChange={data => updateSection('mentalGenerals', data)} />
       <MiasmaticDiagnosis data={formData.miasmaticDiagnosis} onChange={data => updateSection('miasmaticDiagnosis', data)} />
       <ClinicalDiagnosis data={formData.clinicalDiagnosis} onChange={data => updateSection('clinicalDiagnosis', data)} />
-
-      {/* Doctor Observations come BEFORE Prescription */}
       <DoctorObservations data={formData.doctorObservations} onChange={data => updateSection('doctorObservations', data)} />
-
-      {/* Face image upload is before Prescription & AI analysis */}
       <FaceImageUpload onImageChange={handleImageChange} />
-
-      {/* Prescription is LAST */}
       <PrescriptionDetails data={formData.prescriptionDetails} onChange={data => updateSection('prescriptionDetails', data)} />
 
       <button type="submit" style={{ marginTop: 20, padding: '12px 24px', fontSize: '16px' }}>
