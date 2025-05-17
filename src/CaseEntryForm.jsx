@@ -1,191 +1,100 @@
 import React, { useState } from 'react';
 
-const CaseEntryForm = () => {
-  const [formData, setFormData] = useState({
-    // Basic Patient Info
-    name: '',
-    age: '',
-    gender: '',
-    maritalStatus: '',
-    occupation: '',
-    address: '',
-    phoneWhatsApp: '',
-    dateOfVisit: '',
+const CaseSheetForm = () => {
+  const [name, setName] = useState('');
+  const [complaints, setComplaints] = useState([{ complaint: '', duration: '', details: '' }]);
+  const [image, setImage] = useState(null);
+  const [physicalGenerals, setPhysicalGenerals] = useState('');
+  const [mentalSymptoms, setMentalSymptoms] = useState('');
+  const [pastHistory, setPastHistory] = useState('');
+  const [familyHistory, setFamilyHistory] = useState('');
+  const [labReports, setLabReports] = useState('');
+  const [diagnosis, setDiagnosis] = useState('');
+  const [prescription, setPrescription] = useState('');
 
-    // Chief Complaints (array)
-    complaints: [{ complaint: '', duration: '', description: '' }],
-
-    // Other fields...
-    historyPresentIllness: '',
-    childhoodDiseases: '',
-    surgeriesInjuries: '',
-    majorIllnesses: '',
-    familyHistory: '',
-    appetite: '',
-    cravingsAversions: '',
-    thirst: '',
-    bowelMovement: '',
-    urine: '',
-    sleep: '',
-    dreams: '',
-    sweat: '',
-    thermalNature: '',
-    habits: '',
-    menstrualHistory: '',
-    mentalSymptoms: '',
-    generalRemarks: '',
-    doctorObservations: '',
-
-    // Prescriptions array
-    prescriptions: [{ date: '', remedyName: '', potency: '', dose: '', instructions: '' }],
-
-    // Face image file and preview URL
-    faceImage: null,
-    faceImagePreview: null,
-  });
-
-  // Basic input change handler
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleComplaintChange = (index, field, value) => {
+    const updated = [...complaints];
+    updated[index][field] = value;
+    setComplaints(updated);
   };
 
-  // Complaint handlers
-  const handleComplaintChange = (index, e) => {
-    const { name, value } = e.target;
-    const newComplaints = [...formData.complaints];
-    newComplaints[index][name] = value;
-    setFormData((prev) => ({ ...prev, complaints: newComplaints }));
-  };
   const addComplaint = () => {
-    setFormData((prev) => ({
-      ...prev,
-      complaints: [...prev.complaints, { complaint: '', duration: '', description: '' }],
-    }));
-  };
-  const removeComplaint = (index) => {
-    const newComplaints = formData.complaints.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, complaints: newComplaints }));
+    setComplaints([...complaints, { complaint: '', duration: '', details: '' }]);
   };
 
-  // Prescription handlers
-  const handlePrescriptionChange = (index, e) => {
-    const { name, value } = e.target;
-    const newPrescriptions = [...formData.prescriptions];
-    newPrescriptions[index][name] = value;
-    setFormData((prev) => ({ ...prev, prescriptions: newPrescriptions }));
-  };
-  const addPrescription = () => {
-    setFormData((prev) => ({
-      ...prev,
-      prescriptions: [...prev.prescriptions, { date: '', remedyName: '', potency: '', dose: '', instructions: '' }],
-    }));
-  };
-  const removePrescription = (index) => {
-    const newPrescriptions = formData.prescriptions.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, prescriptions: newPrescriptions }));
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('complaints', JSON.stringify(complaints));
+    if (image) formData.append('image', image);
+    formData.append('physicalGenerals', physicalGenerals);
+    formData.append('mentalSymptoms', mentalSymptoms);
+    formData.append('pastHistory', pastHistory);
+    formData.append('familyHistory', familyHistory);
+    formData.append('labReports', labReports);
+    formData.append('diagnosis', diagnosis);
+    formData.append('prescription', prescription);
 
-  // Handle image file input change for face image
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        faceImage: file,
-        faceImagePreview: URL.createObjectURL(file),
-      }));
+    try {
+      const res = await fetch('https://your-backend-url/submit-case', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        alert('Case submitted successfully!');
+      } else {
+        alert('Submission failed!');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error submitting case.');
     }
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // For demo, just log formData
-    console.log('Form Data:', formData);
-
-    // Example of preparing FormData if sending to backend
-    /*
-    const data = new FormData();
-    data.append('faceImage', formData.faceImage);
-    data.append('name', formData.name);
-    // Append other fields similarly or stringify nested arrays/objects
-    */
-
-    alert('Form submitted! Check console.');
-  };
-
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 900, margin: 'auto' }}>
-      <h2>1. Basic Patient Information</h2>
-      <label>
-        Name: <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-      </label>
-      <br />
+    <form onSubmit={handleSubmit} className="p-4 max-w-3xl mx-auto space-y-4 bg-white shadow-md rounded-lg">
+      <h2 className="text-xl font-bold">1. Basic Patient Information</h2>
+      <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} className="w-full border p-2 rounded" />
 
-      {/* Other fields like Age, Gender etc... */}
-
-      {/* Chief Complaints */}
-      <h2>2. Chief Complaints (Problem + Duration + Details)</h2>
-      {formData.complaints.map((item, index) => (
-        <div key={index} style={{ border: '1px solid #ddd', padding: 10, marginBottom: 10 }}>
-          <label>
-            Complaint:
-            <input
-              type="text"
-              name="complaint"
-              value={item.complaint}
-              onChange={(e) => handleComplaintChange(index, e)}
-              required
-            />
-          </label>
-          {/* Duration, Description fields, Remove button */}
-          {/* ... */}
-          {formData.complaints.length > 1 && (
-            <button type="button" onClick={() => removeComplaint(index)} style={{ color: 'red' }}>
-              Remove Complaint
-            </button>
-          )}
+      <h2 className="text-xl font-bold">2. Chief Complaints</h2>
+      {complaints.map((c, idx) => (
+        <div key={idx} className="space-y-2 border p-2 rounded">
+          <input type="text" placeholder="Complaint" value={c.complaint} onChange={(e) => handleComplaintChange(idx, 'complaint', e.target.value)} className="w-full border p-2 rounded" />
+          <input type="text" placeholder="Duration" value={c.duration} onChange={(e) => handleComplaintChange(idx, 'duration', e.target.value)} className="w-full border p-2 rounded" />
+          <textarea placeholder="Details" value={c.details} onChange={(e) => handleComplaintChange(idx, 'details', e.target.value)} className="w-full border p-2 rounded"></textarea>
         </div>
       ))}
-      <button type="button" onClick={addComplaint}>
-        + Add Complaint
-      </button>
+      <button type="button" onClick={addComplaint} className="bg-blue-500 text-white px-3 py-1 rounded">+ Add Complaint</button>
 
-      {/* Prescription section similarly */}
+      <h2 className="text-xl font-bold">3. Face Image Upload</h2>
+      <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
 
-      {/* Face Image Upload */}
-      <h2>Face Image Upload</h2>
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-      {formData.faceImagePreview && (
-        <div style={{ marginTop: 10 }}>
-          <img
-            src={formData.faceImagePreview}
-            alt="Face Preview"
-            style={{ width: 200, height: 'auto', borderRadius: 8, border: '1px solid #ccc' }}
-          />
-          <br />
-          <button
-            type="button"
-            onClick={() =>
-              setFormData((prev) => ({
-                ...prev,
-                faceImage: null,
-                faceImagePreview: null,
-              }))
-            }
-            style={{ marginTop: 5 }}
-          >
-            Remove Image
-          </button>
-        </div>
-      )}
+      <h2 className="text-xl font-bold">4. Physical Generals</h2>
+      <textarea value={physicalGenerals} onChange={(e) => setPhysicalGenerals(e.target.value)} className="w-full border p-2 rounded"></textarea>
 
-      <hr />
-      <button type="submit">Submit Case</button>
+      <h2 className="text-xl font-bold">5. Mental Symptoms</h2>
+      <textarea value={mentalSymptoms} onChange={(e) => setMentalSymptoms(e.target.value)} className="w-full border p-2 rounded"></textarea>
+
+      <h2 className="text-xl font-bold">6. Past History</h2>
+      <textarea value={pastHistory} onChange={(e) => setPastHistory(e.target.value)} className="w-full border p-2 rounded"></textarea>
+
+      <h2 className="text-xl font-bold">7. Family History</h2>
+      <textarea value={familyHistory} onChange={(e) => setFamilyHistory(e.target.value)} className="w-full border p-2 rounded"></textarea>
+
+      <h2 className="text-xl font-bold">8. Lab Reports</h2>
+      <textarea value={labReports} onChange={(e) => setLabReports(e.target.value)} className="w-full border p-2 rounded"></textarea>
+
+      <h2 className="text-xl font-bold">9. Diagnosis</h2>
+      <textarea value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} className="w-full border p-2 rounded"></textarea>
+
+      <h2 className="text-xl font-bold">10. Prescription</h2>
+      <textarea value={prescription} onChange={(e) => setPrescription(e.target.value)} className="w-full border p-2 rounded"></textarea>
+
+      <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Submit Case</button>
     </form>
   );
 };
 
-export default CaseEntryForm;
+export default CaseSheetForm;
