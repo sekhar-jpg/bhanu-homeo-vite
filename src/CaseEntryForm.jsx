@@ -11,6 +11,8 @@ import DoctorObservations from './DoctorObservations';
 import FaceImageUpload from './FaceImageUpload';
 import PrescriptionDetails from './PrescriptionDetails';
 
+const BACKEND_URL = 'https://bhanu-homeo-vite-backend.onrender.com';
+
 const CaseEntryForm = () => {
   const [formData, setFormData] = useState({
     patientInfo: {},
@@ -23,20 +25,20 @@ const CaseEntryForm = () => {
     clinicalDiagnosis: {},
     doctorObservations: {},
     faceImage: null,
-    prescriptionDetails: {}
+    prescriptionDetails: {},
   });
 
   const updateSection = (section, data) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [section]: data
+      [section]: data,
     }));
   };
 
   const handleImageChange = (imageFile) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      faceImage: imageFile
+      faceImage: imageFile,
     }));
   };
 
@@ -56,7 +58,7 @@ const CaseEntryForm = () => {
         }
       }
 
-      const response = await fetch('/submit-case', {
+      const response = await fetch(`${BACKEND_URL}/submit-case`, {
         method: 'POST',
         body: formDataToSend,
       });
@@ -65,8 +67,20 @@ const CaseEntryForm = () => {
 
       if (response.ok) {
         alert('Case submitted successfully!');
-        // Optional: Reset form here if needed
-        // setFormData({...}); // reset to initial state
+        // Reset form after successful submission
+        setFormData({
+          patientInfo: {},
+          chiefComplaints: {},
+          pastHistory: {},
+          familyHistory: {},
+          personalHistory: {},
+          mentalGenerals: {},
+          miasmaticDiagnosis: {},
+          clinicalDiagnosis: {},
+          doctorObservations: {},
+          faceImage: null,
+          prescriptionDetails: {},
+        });
       } else {
         alert('Submission failed: ' + (result.message || 'Unknown error'));
       }
@@ -77,17 +91,17 @@ const CaseEntryForm = () => {
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 900, margin: 'auto', padding: 20 }}>
-      <PatientInfo data={formData.patientInfo} onChange={data => updateSection('patientInfo', data)} />
-      <ChiefComplaints data={formData.chiefComplaints} onChange={data => updateSection('chiefComplaints', data)} />
-      <PastHistory data={formData.pastHistory} onChange={data => updateSection('pastHistory', data)} />
-      <FamilyHistory data={formData.familyHistory} onChange={data => updateSection('familyHistory', data)} />
-      <PersonalHistory data={formData.personalHistory} onChange={data => updateSection('personalHistory', data)} />
-      <MentalGenerals data={formData.mentalGenerals} onChange={data => updateSection('mentalGenerals', data)} />
-      <MiasmaticDiagnosis data={formData.miasmaticDiagnosis} onChange={data => updateSection('miasmaticDiagnosis', data)} />
-      <ClinicalDiagnosis data={formData.clinicalDiagnosis} onChange={data => updateSection('clinicalDiagnosis', data)} />
-      <DoctorObservations data={formData.doctorObservations} onChange={data => updateSection('doctorObservations', data)} />
+      <PatientInfo data={formData.patientInfo} onChange={(data) => updateSection('patientInfo', data)} />
+      <ChiefComplaints data={formData.chiefComplaints} onChange={(data) => updateSection('chiefComplaints', data)} />
+      <PastHistory data={formData.pastHistory} onChange={(data) => updateSection('pastHistory', data)} />
+      <FamilyHistory data={formData.familyHistory} onChange={(data) => updateSection('familyHistory', data)} />
+      <PersonalHistory data={formData.personalHistory} onChange={(data) => updateSection('personalHistory', data)} />
+      <MentalGenerals data={formData.mentalGenerals} onChange={(data) => updateSection('mentalGenerals', data)} />
+      <MiasmaticDiagnosis data={formData.miasmaticDiagnosis} onChange={(data) => updateSection('miasmaticDiagnosis', data)} />
+      <ClinicalDiagnosis data={formData.clinicalDiagnosis} onChange={(data) => updateSection('clinicalDiagnosis', data)} />
+      <DoctorObservations data={formData.doctorObservations} onChange={(data) => updateSection('doctorObservations', data)} />
       <FaceImageUpload onImageChange={handleImageChange} />
-      <PrescriptionDetails data={formData.prescriptionDetails} onChange={data => updateSection('prescriptionDetails', data)} />
+      <PrescriptionDetails data={formData.prescriptionDetails} onChange={(data) => updateSection('prescriptionDetails', data)} />
 
       <button type="submit" style={{ marginTop: 20, padding: '12px 24px', fontSize: '16px' }}>
         Submit Case
