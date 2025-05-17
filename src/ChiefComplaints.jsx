@@ -4,63 +4,71 @@ const ChiefComplaints = ({ data = {}, onChange }) => {
   const handleInputChange = (e) => {
     onChange({
       ...data,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   return (
-    <div>
-      <h2>🔷 సాధారణ లక్షణాలు (Chief Complaints)</h2>
+    <div style={{ marginBottom: '2rem' }}>
+      <h2>Chief Complaints</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <label>
+          Main Complaint:
+          <input
+            type="text"
+            name="mainComplaint"
+            value={data.mainComplaint || ''}
+            onChange={handleInputChange}
+            placeholder="Enter main complaint"
+          />
+        </label>
 
-      <label>లక్షణాలు / Symptoms:</label>
-      <textarea
-        name="symptoms"
-        value={data.symptoms || ''}
-        onChange={handleInputChange}
-        placeholder="లక్షణాలు వివరించండి"
-      />
+        <label>
+          Duration:
+          <input
+            type="text"
+            name="duration"
+            value={data.duration || ''}
+            onChange={handleInputChange}
+            placeholder="Duration of complaint"
+          />
+        </label>
 
-      <label>ఉష్ణత తత్వం (Thermal reaction):</label>
-      <select name="thermal" value={data.thermal || ''} onChange={handleInputChange}>
-        <option value="">ఎంచుకోండి</option>
-        <option value="Warm">ఉష్ణత</option>
-        <option value="Cold">చల్లగా</option>
-        <option value="Normal">సాధారణం</option>
-      </select>
+        <label>
+          Severity:
+          <input
+            type="text"
+            name="severity"
+            value={data.severity || ''}
+            onChange={handleInputChange}
+            placeholder="Severity of complaint"
+          />
+        </label>
 
-      <label>దాహం (Thirst):</label>
-      <select name="thirst" value={data.thirst || ''} onChange={handleInputChange}>
-        <option value="">ఎంచుకోండి</option>
-        <option value="Increased">అధిక</option>
-        <option value="Decreased">తక్కువ</option>
-        <option value="Normal">సాధారణం</option>
-      </select>
+        <label>
+          Aggravating Factors:
+          <textarea
+            name="aggravatingFactors"
+            value={data.aggravatingFactors || ''}
+            onChange={handleInputChange}
+            placeholder="What makes it worse?"
+            rows={3}
+            style={{ resize: 'vertical' }}
+          />
+        </label>
 
-      <label>ఇష్టపడే పదార్థాలు (Likes):</label>
-      <input
-        type="text"
-        name="likes"
-        value={data.likes || ''}
-        onChange={handleInputChange}
-        placeholder="ఇష్టపడే పదార్థాలు"
-      />
-
-      <label>ద్వేషించేవి (Dislikes):</label>
-      <input
-        type="text"
-        name="dislikes"
-        value={data.dislikes || ''}
-        onChange={handleInputChange}
-        placeholder="ద్వేషించేవి"
-      />
-
-      <label>మోడాలిటీస్ (Better/Worse):</label>
-      <textarea
-        name="modalities"
-        value={data.modalities || ''}
-        onChange={handleInputChange}
-        placeholder="మోడాలిటీస్ వివరించండి"
-      />
+        <label>
+          Relieving Factors:
+          <textarea
+            name="relievingFactors"
+            value={data.relievingFactors || ''}
+            onChange={handleInputChange}
+            placeholder="What makes it better?"
+            rows={3}
+            style={{ resize: 'vertical' }}
+          />
+        </label>
+      </div>
     </div>
   );
 };
