@@ -125,17 +125,29 @@ const CaseEntryForm = () => {
     }));
   };
 
-  // Handle face image upload
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData(prev => ({
+ <h2>Face Image Upload</h2>
+<input type="file" accept="image/*" onChange={handleImageChange} />
+{formData.faceImagePreview && (
+  <div style={{ marginTop: 10 }}>
+    <img
+      src={formData.faceImagePreview}
+      alt="Face Preview"
+      style={{ width: 200, height: 'auto', borderRadius: 8, border: '1px solid #ccc' }}
+    />
+    <br />
+    <button
+      type="button"
+      onClick={() => setFormData(prev => ({
         ...prev,
-        faceImage: file,
-        faceImagePreview: URL.createObjectURL(file),
-      }));
-    }
-  };
+        faceImage: null,
+        faceImagePreview: null,
+      }))}
+      style={{ marginTop: 5 }}
+    >
+      Remove Image
+    </button>
+  </div>
+)}
 
   // Handle form submission (example - you can adapt it)
   const handleSubmit = (e) => {
