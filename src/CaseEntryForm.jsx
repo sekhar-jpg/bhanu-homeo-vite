@@ -1,100 +1,117 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const CaseSheetForm = () => {
-  const [name, setName] = useState('');
-  const [complaints, setComplaints] = useState([{ complaint: '', duration: '', details: '' }]);
-  const [image, setImage] = useState(null);
-  const [physicalGenerals, setPhysicalGenerals] = useState('');
-  const [mentalSymptoms, setMentalSymptoms] = useState('');
-  const [pastHistory, setPastHistory] = useState('');
-  const [familyHistory, setFamilyHistory] = useState('');
-  const [labReports, setLabReports] = useState('');
-  const [diagnosis, setDiagnosis] = useState('');
-  const [prescription, setPrescription] = useState('');
+  const [formData, setFormData] = useState({
+    patientName: "",
+    age: "",
+    gender: "",
+    maritalStatus: "",
+    occupation: "",
+    phoneNumber: "",
+    address: "",
+    date: "",
+    complaints: [{ complaint: "", duration: "", location: "", sensation: "", modality: "", aggravation: "", amelioration: "", associated: "" }],
+    pastHistory: "",
+    familyHistory: "",
+    personalHistory: {
+      appetite: "",
+      thirst: "",
+      cravings: "",
+      aversions: "",
+      bowel: "",
+      urine: "",
+      sweat: "",
+      sleepTime: "",
+      dreams: "",
+      sleepPosition: "",
+      sleepQuality: "",
+      thermal: ""
+    },
+    otherDetails: {
+      skin: "",
+      hair: "",
+      tongue: "",
+      nails: "",
+      bodyType: "",
+      appetiteVariability: ""
+    },
+    mentalGenerals: {
+      fears: "",
+      anger: "",
+      sadness: "",
+      anxiety: "",
+      memory: "",
+      concentration: "",
+      childhoodBehavior: "",
+      griefReactions: "",
+      beliefSystem: "",
+      emotionalSensitivity: ""
+    },
+    miasm: "",
+    clinicalDiagnosis: "",
+    prescription: [{ date: "", medicine: "", potency: "", dose: "", repetition: "" }],
+    faceImage: null
+  });
 
-  const handleComplaintChange = (index, field, value) => {
-    const updated = [...complaints];
-    updated[index][field] = value;
-    setComplaints(updated);
-  };
-
-  const addComplaint = () => {
-    setComplaints([...complaints, { complaint: '', duration: '', details: '' }]);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('complaints', JSON.stringify(complaints));
-    if (image) formData.append('image', image);
-    formData.append('physicalGenerals', physicalGenerals);
-    formData.append('mentalSymptoms', mentalSymptoms);
-    formData.append('pastHistory', pastHistory);
-    formData.append('familyHistory', familyHistory);
-    formData.append('labReports', labReports);
-    formData.append('diagnosis', diagnosis);
-    formData.append('prescription', prescription);
-
-    try {
-      const res = await fetch('https://your-backend-url/submit-case', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (res.ok) {
-        alert('Case submitted successfully!');
-      } else {
-        alert('Submission failed!');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error submitting case.');
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "faceImage") {
+      setFormData({ ...formData, [name]: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === "faceImage") {
+        data.append("faceImage", value);
+      } else {
+        data.append(key, JSON.stringify(value));
+      }
+    });
+
+    fetch("/submit-case", {
+      method: "POST",
+      body: data
+    })
+      .then((res) => res.json())
+      .then((data) => alert("Case submitted successfully!"))
+      .catch((err) => console.error("Error submitting case:", err));
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="p-4 max-w-3xl mx-auto space-y-4 bg-white shadow-md rounded-lg">
-      <h2 className="text-xl font-bold">1. Basic Patient Information</h2>
-      <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} className="w-full border p-2 rounded" />
+    <form onSubmit={handleSubmit} className="space-y-4 p-4">
+      <h2>👤 Patient Information</h2>
+      <input name="patientName" placeholder="పేరు" onChange={handleChange} />
+      <input name="age" placeholder="వయస్సు" onChange={handleChange} />
+      <input name="gender" placeholder="లింగం" onChange={handleChange} />
+      <input name="maritalStatus" placeholder="వివాహ స్థితి" onChange={handleChange} />
+      <input name="occupation" placeholder="వృత్తి" onChange={handleChange} />
+      <input name="phoneNumber" placeholder="ఫోన్ నంబర్" onChange={handleChange} />
+      <input name="address" placeholder="చిరునామా" onChange={handleChange} />
+      <input name="date" type="date" onChange={handleChange} />
 
-      <h2 className="text-xl font-bold">2. Chief Complaints</h2>
-      {complaints.map((c, idx) => (
-        <div key={idx} className="space-y-2 border p-2 rounded">
-          <input type="text" placeholder="Complaint" value={c.complaint} onChange={(e) => handleComplaintChange(idx, 'complaint', e.target.value)} className="w-full border p-2 rounded" />
-          <input type="text" placeholder="Duration" value={c.duration} onChange={(e) => handleComplaintChange(idx, 'duration', e.target.value)} className="w-full border p-2 rounded" />
-          <textarea placeholder="Details" value={c.details} onChange={(e) => handleComplaintChange(idx, 'details', e.target.value)} className="w-full border p-2 rounded"></textarea>
-        </div>
-      ))}
-      <button type="button" onClick={addComplaint} className="bg-blue-500 text-white px-3 py-1 rounded">+ Add Complaint</button>
+      <h2>🧪 Chief Complaints</h2>
+      <input name="complaints[0].complaint" placeholder="సమస్య" onChange={handleChange} />
+      <input name="complaints[0].duration" placeholder="కాల వ్యవధి" onChange={handleChange} />
+      <input name="complaints[0].location" placeholder="ప్రదేశం" onChange={handleChange} />
+      <input name="complaints[0].sensation" placeholder="అనుభూతి" onChange={handleChange} />
+      <input name="complaints[0].modality" placeholder="మోదాలిటీ" onChange={handleChange} />
+      <input name="complaints[0].aggravation" placeholder="చెడే పరిస్థితులు" onChange={handleChange} />
+      <input name="complaints[0].amelioration" placeholder="మెరుగయ్యే పరిస్థితులు" onChange={handleChange} />
+      <input name="complaints[0].associated" placeholder="సంబంధిత లక్షణాలు" onChange={handleChange} />
 
-      <h2 className="text-xl font-bold">3. Face Image Upload</h2>
-      <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
+      <h2>🫉 Past History</h2>
+      <textarea name="pastHistory" placeholder="గత వైద్య చరిత్రి" onChange={handleChange} />
 
-      <h2 className="text-xl font-bold">4. Physical Generals</h2>
-      <textarea value={physicalGenerals} onChange={(e) => setPhysicalGenerals(e.target.value)} className="w-full border p-2 rounded"></textarea>
+      <h2>🧬 Family History</h2>
+      <textarea name="familyHistory" placeholder="కుటుంబ చరిత్రి" onChange={handleChange} />
 
-      <h2 className="text-xl font-bold">5. Mental Symptoms</h2>
-      <textarea value={mentalSymptoms} onChange={(e) => setMentalSymptoms(e.target.value)} className="w-full border p-2 rounded"></textarea>
-
-      <h2 className="text-xl font-bold">6. Past History</h2>
-      <textarea value={pastHistory} onChange={(e) => setPastHistory(e.target.value)} className="w-full border p-2 rounded"></textarea>
-
-      <h2 className="text-xl font-bold">7. Family History</h2>
-      <textarea value={familyHistory} onChange={(e) => setFamilyHistory(e.target.value)} className="w-full border p-2 rounded"></textarea>
-
-      <h2 className="text-xl font-bold">8. Lab Reports</h2>
-      <textarea value={labReports} onChange={(e) => setLabReports(e.target.value)} className="w-full border p-2 rounded"></textarea>
-
-      <h2 className="text-xl font-bold">9. Diagnosis</h2>
-      <textarea value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} className="w-full border p-2 rounded"></textarea>
-
-      <h2 className="text-xl font-bold">10. Prescription</h2>
-      <textarea value={prescription} onChange={(e) => setPrescription(e.target.value)} className="w-full border p-2 rounded"></textarea>
-
-      <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Submit Case</button>
-    </form>
-  );
-};
-
-export default CaseSheetForm;
+      <h2>👤 Personal History</h2>
+      <input name="appetite" placeholder="ఆకలి" onChange={handleChange} />
+      <input name="thirst" placeholder="దాహం" onChange={handleChange} />
+      <input name="cravings" placeholder="ఇష్టమైన పదార్థాలు" onChange={handleChange} />
+      <input name="aversions" placeholder="ద్వేషించేవి" onChange={handleChange} />
