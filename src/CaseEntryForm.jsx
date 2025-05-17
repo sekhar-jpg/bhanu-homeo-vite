@@ -511,7 +511,7 @@ const handleSubmit = async (e) => {
   formData.append("faceImage", faceImageFile);
 
   try {
-    const response = await fetch(https://bhanu-homeo-vite-backend.onrender.com/submit-case", {
+    const response = await fetch("https://bhanu-homeo-vite-backend.onrender.com/submit-case", {
       method: "POST",
       body: formData,
     });
