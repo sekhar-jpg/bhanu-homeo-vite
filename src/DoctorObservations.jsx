@@ -4,21 +4,58 @@ const DoctorObservations = ({ data = {}, onChange }) => {
   const handleInputChange = (e) => {
     onChange({
       ...data,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   return (
-    <div style={{ marginTop: 20 }}>
-      <h3>Doctor's Observations / డాక్టర్ పరిశీలనలు</h3>
-      <textarea
-        name="observations"
-        value={data.observations || ''}
-        onChange={handleInputChange}
-        rows={5}
-        style={{ width: '100%', padding: 10 }}
-        placeholder="Enter doctor's observations here"
-      />
+    <div style={{ marginBottom: '2rem' }}>
+      <h2>Doctor Observations</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <label>
+          General Appearance:
+          <input
+            type="text"
+            name="generalAppearance"
+            value={data.generalAppearance || ''}
+            onChange={handleInputChange}
+            placeholder="Enter general appearance"
+          />
+        </label>
+
+        <label>
+          Physical Findings:
+          <input
+            type="text"
+            name="physicalFindings"
+            value={data.physicalFindings || ''}
+            onChange={handleInputChange}
+            placeholder="Enter physical findings"
+          />
+        </label>
+
+        <label>
+          Emotional State:
+          <input
+            type="text"
+            name="emotionalState"
+            value={data.emotionalState || ''}
+            onChange={handleInputChange}
+            placeholder="Enter emotional state"
+          />
+        </label>
+
+        <label>
+          Other Observations:
+          <input
+            type="text"
+            name="otherObservations"
+            value={data.otherObservations || ''}
+            onChange={handleInputChange}
+            placeholder="Enter other observations"
+          />
+        </label>
+      </div>
     </div>
   );
 };
