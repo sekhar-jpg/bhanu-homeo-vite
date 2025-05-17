@@ -10,7 +10,7 @@ const AllCases = () => {
 
   const fetchCases = async () => {
     try {
-      const response = await axios.get("https://your-backend-url/all-cases"); // Replace with your actual backend URL
+      const response = await axios.get(https://bhanu-homeo-vite-backend.onrender.com/all-cases"); 
       setCases(response.data);
     } catch (error) {
       console.error("Error fetching cases:", error);
