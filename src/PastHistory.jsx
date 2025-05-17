@@ -4,29 +4,59 @@ const PastHistory = ({ data = {}, onChange }) => {
   const handleInputChange = (e) => {
     onChange({
       ...data,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   return (
-    <div>
-      <h2>📜 గత చరిత్ర (Past History)</h2>
+    <div style={{ marginBottom: '2rem' }}>
+      <h2>Past History</h2>
 
-      <label>గత వ్యాధులు / Past Illnesses:</label>
-      <textarea
-        name="pastIllnesses"
-        value={data.pastIllnesses || ''}
-        onChange={handleInputChange}
-        placeholder="గత వ్యాధుల వివరాలు"
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <label>
+          Past Illnesses:
+          <textarea
+            name="pastIllnesses"
+            value={data.pastIllnesses || ''}
+            onChange={handleInputChange}
+            placeholder="Describe previous illnesses"
+            rows={3}
+          />
+        </label>
 
-      <label>ఆపరేషన్లు / Surgeries:</label>
-      <textarea
-        name="surgeries"
-        value={data.surgeries || ''}
-        onChange={handleInputChange}
-        placeholder="ఆపరేషన్ల వివరాలు"
-      />
+        <label>
+          Past Surgeries:
+          <textarea
+            name="pastSurgeries"
+            value={data.pastSurgeries || ''}
+            onChange={handleInputChange}
+            placeholder="List any surgeries"
+            rows={2}
+          />
+        </label>
+
+        <label>
+          Allergies:
+          <textarea
+            name="allergies"
+            value={data.allergies || ''}
+            onChange={handleInputChange}
+            placeholder="Mention any allergies"
+            rows={2}
+          />
+        </label>
+
+        <label>
+          Hospitalizations:
+          <textarea
+            name="hospitalizations"
+            value={data.hospitalizations || ''}
+            onChange={handleInputChange}
+            placeholder="Past hospital admissions"
+            rows={2}
+          />
+        </label>
+      </div>
     </div>
   );
 };
