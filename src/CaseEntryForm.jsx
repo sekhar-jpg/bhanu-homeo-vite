@@ -4,8 +4,7 @@ const CaseEntryForm = () => {
   const [formData, setFormData] = useState({
     name: '', age: '', gender: '', maritalStatus: '', occupation: '', address: '', phoneWhatsApp: '', dateOfVisit: '',
     complaints: [{ complaint: '', duration: '', description: '' }],
-    historyPresentIllness: '',
-    childhoodDiseases: '', surgeriesInjuries: '', majorIllnesses: '',
+    historyPresentIllness: '', childhoodDiseases: '', surgeriesInjuries: '', majorIllnesses: '',
     familyHistory: '',
     appetite: '', cravingsAversions: '', thirst: '', bowelMovement: '', urine: '', sleep: '', dreams: '', sweat: '', thermalNature: '', habits: '', menstrualHistory: '',
     mentalSymptoms: '', generalRemarks: '', doctorObservations: '',
@@ -73,8 +72,24 @@ const CaseEntryForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
-    alert('Form submitted! Check console for data.');
+    const dataToSend = new FormData();
+    for (const key in formData) {
+      if (key === 'faceImage' && formData[key]) {
+        dataToSend.append('faceImage', formData[key]);
+      } else {
+        dataToSend.append(key, JSON.stringify(formData[key]));
+      }
+    }
+    fetch('/submit-case', {
+      method: 'POST',
+      body: dataToSend,
+    }).then(res => res.json()).then(data => {
+      alert('Case submitted successfully!');
+      console.log(data);
+    }).catch(err => {
+      alert('Submission failed.');
+      console.error(err);
+    });
   };
 
   return (
@@ -100,22 +115,58 @@ const CaseEntryForm = () => {
       <h2>2. Chief Complaints</h2>
       {formData.complaints.map((item, index) => (
         <div key={index} style={{ border: '1px solid #ddd', padding: 10, marginBottom: 10 }}>
-          <label>Complaint:
-            <input type="text" name="complaint" value={item.complaint} onChange={(e) => handleComplaintChange(index, e)} required />
-          </label><br />
-          <label>Duration:
-            <input type="text" name="duration" value={item.duration} onChange={(e) => handleComplaintChange(index, e)} required />
-          </label><br />
-          <label>Description:
-            <textarea name="description" value={item.description} onChange={(e) => handleComplaintChange(index, e)} rows={2} required />
-          </label><br />
+          <label>Complaint: <input type="text" name="complaint" value={item.complaint} onChange={(e) => handleComplaintChange(index, e)} required /></label><br />
+          <label>Duration: <input type="text" name="duration" value={item.duration} onChange={(e) => handleComplaintChange(index, e)} required /></label><br />
+          <label>Description: <textarea name="description" value={item.description} onChange={(e) => handleComplaintChange(index, e)} rows={2} required /></textarea></label><br />
           {formData.complaints.length > 1 && <button type="button" onClick={() => removeComplaint(index)} style={{ color: 'red' }}>Remove</button>}
         </div>
       ))}
       <button type="button" onClick={addComplaint}>+ Add Complaint</button>
       <hr />
 
-      <h2>Face Image Upload</h2>
+      <h2>3. Detailed History</h2>
+      <label>History of Present Illness: <textarea name="historyPresentIllness" value={formData.historyPresentIllness} onChange={handleChange} rows={2} /></label><br />
+      <label>Childhood Diseases: <textarea name="childhoodDiseases" value={formData.childhoodDiseases} onChange={handleChange} rows={2} /></label><br />
+      <label>Surgeries / Injuries: <textarea name="surgeriesInjuries" value={formData.surgeriesInjuries} onChange={handleChange} rows={2} /></label><br />
+      <label>Major Illnesses: <textarea name="majorIllnesses" value={formData.majorIllnesses} onChange={handleChange} rows={2} /></label><br />
+      <label>Family History: <textarea name="familyHistory" value={formData.familyHistory} onChange={handleChange} rows={2} /></label>
+      <hr />
+
+      <h2>4. Physical Generals</h2>
+      <label>Appetite: <input name="appetite" value={formData.appetite} onChange={handleChange} /></label><br />
+      <label>Cravings / Aversions: <input name="cravingsAversions" value={formData.cravingsAversions} onChange={handleChange} /></label><br />
+      <label>Thirst: <input name="thirst" value={formData.thirst} onChange={handleChange} /></label><br />
+      <label>Bowel Movement: <input name="bowelMovement" value={formData.bowelMovement} onChange={handleChange} /></label><br />
+      <label>Urine: <input name="urine" value={formData.urine} onChange={handleChange} /></label><br />
+      <label>Sleep: <input name="sleep" value={formData.sleep} onChange={handleChange} /></label><br />
+      <label>Dreams: <input name="dreams" value={formData.dreams} onChange={handleChange} /></label><br />
+      <label>Sweat: <input name="sweat" value={formData.sweat} onChange={handleChange} /></label><br />
+      <label>Thermal Nature: <input name="thermalNature" value={formData.thermalNature} onChange={handleChange} /></label><br />
+      <label>Habits: <input name="habits" value={formData.habits} onChange={handleChange} /></label><br />
+      <label>Menstrual History (if applicable): <input name="menstrualHistory" value={formData.menstrualHistory} onChange={handleChange} /></label>
+      <hr />
+
+      <h2>5. Mind & Observations</h2>
+      <label>Mental Symptoms: <textarea name="mentalSymptoms" value={formData.mentalSymptoms} onChange={handleChange} rows={2} /></label><br />
+      <label>General Remarks: <textarea name="generalRemarks" value={formData.generalRemarks} onChange={handleChange} rows={2} /></label><br />
+      <label>Doctor's Observations: <textarea name="doctorObservations" value={formData.doctorObservations} onChange={handleChange} rows={2} /></label>
+      <hr />
+
+      <h2>6. Prescription</h2>
+      {formData.prescriptions.map((item, index) => (
+        <div key={index} style={{ border: '1px solid #ddd', padding: 10, marginBottom: 10 }}>
+          <label>Date: <input type="date" name="date" value={item.date} onChange={(e) => handlePrescriptionChange(index, e)} /></label><br />
+          <label>Remedy Name: <input type="text" name="remedyName" value={item.remedyName} onChange={(e) => handlePrescriptionChange(index, e)} /></label><br />
+          <label>Potency: <input type="text" name="potency" value={item.potency} onChange={(e) => handlePrescriptionChange(index, e)} /></label><br />
+          <label>Dose: <input type="text" name="dose" value={item.dose} onChange={(e) => handlePrescriptionChange(index, e)} /></label><br />
+          <label>Instructions: <input type="text" name="instructions" value={item.instructions} onChange={(e) => handlePrescriptionChange(index, e)} /></label><br />
+          {formData.prescriptions.length > 1 && <button type="button" onClick={() => removePrescription(index)} style={{ color: 'red' }}>Remove</button>}
+        </div>
+      ))}
+      <button type="button" onClick={addPrescription}>+ Add Prescription</button>
+      <hr />
+
+      <h2>7. Face Image Upload</h2>
       <input type="file" accept="image/*" onChange={handleImageChange} />
       {formData.faceImagePreview && (
         <div style={{ marginTop: 10 }}>
