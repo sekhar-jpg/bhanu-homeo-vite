@@ -3,10 +3,6 @@ import axios from "axios";
 
 const AllCases = () => {
   const [cases, setCases] = useState([]);
-  const [followUps, setFollowUps] = useState({});
-  const [loading, setLoading] = useState(true);
-
-  const API_URL = "https://bhanu-homeo-vite-backend.onrender.com";
 
   useEffect(() => {
     fetchCases();
@@ -14,71 +10,58 @@ const AllCases = () => {
 
   const fetchCases = async () => {
     try {
-      const res = await axios.get(`${API_URL}/all-cases`);
-      setCases(res.data);
-    } catch (err) {
-      console.error("Error fetching cases:", err);
-    } finally {
-      setLoading(false);
+      const response = await axios.get("https://your-backend-url/all-cases"); // Replace with your actual backend URL
+      setCases(response.data);
+    } catch (error) {
+      console.error("Error fetching cases:", error);
     }
   };
 
-  const fetchFollowUps = async (caseId) => {
+  const handleEditFollowUp = (caseId, followupId) => {
+    // Placeholder — you can open a modal to edit
+    alert(`Edit Follow-up ID: ${followupId} for Case ID: ${caseId}`);
+  };
+
+  const handleDeleteFollowUp = async (caseId, followupId) => {
     try {
-      const res = await axios.get(`${API_URL}/get-followups/${caseId}`);
-      setFollowUps((prev) => ({
-        ...prev,
-        [caseId]: res.data,
-      }));
-    } catch (err) {
-      console.error("Error fetching follow-ups:", err);
+      await axios.delete(`https://your-backend-url/delete-followup/${caseId}/${followupId}`);
+      alert("Follow-up deleted");
+      fetchCases(); // Refresh data
+    } catch (error) {
+      console.error("Error deleting follow-up:", error);
     }
   };
-
-  if (loading) return <p className="p-4">Loading cases...</p>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">All Cases</h2>
+    <div style={{ padding: "20px" }}>
+      <h2>All Cases</h2>
       {cases.length === 0 ? (
         <p>No cases found.</p>
       ) : (
-        cases.map((c) => (
-          <div
-            key={c._id}
-            className="border rounded-lg p-4 mb-4 shadow-md bg-white"
-          >
-            <p><strong>Name:</strong> {c.name}</p>
-            <p><strong>Age:</strong> {c.age}</p>
-            <p><strong>Gender:</strong> {c.gender}</p>
-            <p><strong>Phone:</strong> {c.phone}</p>
-            <p><strong>Complaints:</strong> {c.complaints?.join(", ")}</p>
+        cases.map((item, index) => (
+          <div key={item._id} style={{ border: "1px solid #ccc", padding: "15px", marginBottom: "20px", borderRadius: "10px" }}>
+            <h3>{index + 1}. {item.patientName} ({item.age} yrs, {item.gender})</h3>
+            <p><strong>Phone:</strong> {item.phone}</p>
+            <p><strong>Address:</strong> {item.address}</p>
+            <p><strong>Diagnosis:</strong> {item.diagnosis}</p>
+            <p><strong>Prescription:</strong> {item.prescription}</p>
 
-            <button
-              onClick={() => fetchFollowUps(c._id)}
-              className="mt-2 bg-blue-600 text-white px-4 py-1 rounded"
-            >
-              View Follow-ups
-            </button>
-
-            {followUps[c._id] && (
-              <div className="mt-3 bg-gray-100 p-3 rounded">
-                <p className="font-semibold mb-2">Follow-ups:</p>
-                {followUps[c._id].length === 0 ? (
-                  <p>No follow-ups yet.</p>
-                ) : (
-                  <ul className="list-disc pl-4">
-                    {followUps[c._id].map((f) => (
-                      <li key={f._id}>
-                        <strong>Date:</strong>{" "}
-                        {new Date(f.createdAt).toLocaleDateString()} |{" "}
-                        <strong>Notes:</strong> {f.notes}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+            <h4>Follow-Ups</h4>
+            {item.followUps && item.followUps.length > 0 ? (
+              item.followUps.map((fu) => (
+                <div key={fu._id} style={{ marginLeft: "20px", marginBottom: "10px" }}>
+                  <p>📅 {fu.date} - 📝 {fu.notes}</p>
+                  <button onClick={() => handleEditFollowUp(item._id, fu._id)}>Edit</button>
+                  <button onClick={() => handleDeleteFollowUp(item._id, fu._id)} style={{ marginLeft: "10px", color: "red" }}>Delete</button>
+                </div>
+              ))
+            ) : (
+              <p>No follow-ups yet.</p>
             )}
+
+            <button onClick={() => alert(`Add follow-up for ${item._id}`)} style={{ marginTop: "10px" }}>
+              ➕ Add Follow-Up
+            </button>
           </div>
         ))
       )}
