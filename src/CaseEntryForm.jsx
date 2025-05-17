@@ -124,34 +124,6 @@ const CaseEntryForm = () => {
       <button type="button" onClick={addComplaint}>+ Add Complaint</button>
       <hr />
 
-      <h2>3. Detailed History</h2>
-      <label>History of Present Illness: <textarea name="historyPresentIllness" value={formData.historyPresentIllness} onChange={handleChange} rows={2} /></label><br />
-      <label>Childhood Diseases: <textarea name="childhoodDiseases" value={formData.childhoodDiseases} onChange={handleChange} rows={2} /></label><br />
-      <label>Surgeries / Injuries: <textarea name="surgeriesInjuries" value={formData.surgeriesInjuries} onChange={handleChange} rows={2} /></label><br />
-      <label>Major Illnesses: <textarea name="majorIllnesses" value={formData.majorIllnesses} onChange={handleChange} rows={2} /></label><br />
-      <label>Family History: <textarea name="familyHistory" value={formData.familyHistory} onChange={handleChange} rows={2} /></label>
-      <hr />
-
-      <h2>4. Physical Generals</h2>
-      <label>Appetite: <input name="appetite" value={formData.appetite} onChange={handleChange} /></label><br />
-      <label>Cravings / Aversions: <input name="cravingsAversions" value={formData.cravingsAversions} onChange={handleChange} /></label><br />
-      <label>Thirst: <input name="thirst" value={formData.thirst} onChange={handleChange} /></label><br />
-      <label>Bowel Movement: <input name="bowelMovement" value={formData.bowelMovement} onChange={handleChange} /></label><br />
-      <label>Urine: <input name="urine" value={formData.urine} onChange={handleChange} /></label><br />
-      <label>Sleep: <input name="sleep" value={formData.sleep} onChange={handleChange} /></label><br />
-      <label>Dreams: <input name="dreams" value={formData.dreams} onChange={handleChange} /></label><br />
-      <label>Sweat: <input name="sweat" value={formData.sweat} onChange={handleChange} /></label><br />
-      <label>Thermal Nature: <input name="thermalNature" value={formData.thermalNature} onChange={handleChange} /></label><br />
-      <label>Habits: <input name="habits" value={formData.habits} onChange={handleChange} /></label><br />
-      <label>Menstrual History (if applicable): <input name="menstrualHistory" value={formData.menstrualHistory} onChange={handleChange} /></label>
-      <hr />
-
-      <h2>5. Mind & Observations</h2>
-      <label>Mental Symptoms: <textarea name="mentalSymptoms" value={formData.mentalSymptoms} onChange={handleChange} rows={2} /></label><br />
-      <label>General Remarks: <textarea name="generalRemarks" value={formData.generalRemarks} onChange={handleChange} rows={2} /></label><br />
-      <label>Doctor's Observations: <textarea name="doctorObservations" value={formData.doctorObservations} onChange={handleChange} rows={2} /></label>
-      <hr />
-
       <h2>6. Prescription</h2>
       {formData.prescriptions.map((item, index) => (
         <div key={index} style={{ border: '1px solid #ddd', padding: 10, marginBottom: 10 }}>
@@ -166,16 +138,11 @@ const CaseEntryForm = () => {
       <button type="button" onClick={addPrescription}>+ Add Prescription</button>
       <hr />
 
-      <h2>7. Face Image Upload</h2>
+      <h2>7. Upload Face Image</h2>
       <input type="file" accept="image/*" onChange={handleImageChange} />
-      {formData.faceImagePreview && (
-        <div style={{ marginTop: 10 }}>
-          <img src={formData.faceImagePreview} alt="Face Preview" style={{ width: 200, height: 'auto', borderRadius: 8, border: '1px solid #ccc' }} /><br />
-          <button type="button" onClick={() => setFormData(prev => ({ ...prev, faceImage: null, faceImagePreview: null }))} style={{ marginTop: 5 }}>Remove Image</button>
-        </div>
-      )}
+      {formData.faceImagePreview && <img src={formData.faceImagePreview} alt="Preview" style={{ width: 150, height: 150, marginTop: 10 }} />}
+      <br /><br />
 
-      <hr />
       <button type="submit">Submit Case</button>
     </form>
   );
