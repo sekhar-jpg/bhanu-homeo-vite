@@ -7,25 +7,15 @@ const FaceImageUpload = ({ onImageChange }) => {
     const file = e.target.files[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
-      if (onImageChange) {
-        onImageChange(file);
-      }
+      onImageChange(file);
     }
   };
 
   return (
-    <div>
-      <h2>📸 ముఖ చిత్రం అప్‌లోడ్ (Face Image Upload)</h2>
+    <div style={{ marginTop: 20 }}>
+      <h3>Face Image Upload</h3>
       <input type="file" accept="image/*" onChange={handleFileChange} />
-      {preview && (
-        <div style={{ marginTop: '10px' }}>
-          <img
-            src={preview}
-            alt="Face preview"
-            style={{ maxWidth: '200px', borderRadius: '8px', border: '1px solid #ccc' }}
-          />
-        </div>
-      )}
+      {preview && <img src={preview} alt="Face Preview" style={{ width: 200, marginTop: 10, borderRadius: 8 }} />}
     </div>
   );
 };
