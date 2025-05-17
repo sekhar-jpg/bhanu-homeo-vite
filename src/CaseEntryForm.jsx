@@ -9,6 +9,7 @@ const CaseEntryForm = () => {
     appetite: '', cravingsAversions: '', thirst: '', bowelMovement: '', urine: '', sleep: '', dreams: '', sweat: '', thermalNature: '', habits: '', menstrualHistory: '',
     mentalSymptoms: '', generalRemarks: '', doctorObservations: '',
     prescriptions: [{ date: '', remedyName: '', potency: '', dose: '', instructions: '' }],
+    followUps: [{ date: '', notes: '' }],
     faceImage: null, faceImagePreview: null
   });
 
@@ -53,6 +54,25 @@ const CaseEntryForm = () => {
   const removePrescription = (index) => {
     const newPrescriptions = formData.prescriptions.filter((_, i) => i !== index);
     setFormData(prev => ({ ...prev, prescriptions: newPrescriptions }));
+  };
+
+  const handleFollowUpChange = (index, e) => {
+    const { name, value } = e.target;
+    const newFollowUps = [...formData.followUps];
+    newFollowUps[index][name] = value;
+    setFormData(prev => ({ ...prev, followUps: newFollowUps }));
+  };
+
+  const addFollowUp = () => {
+    setFormData(prev => ({
+      ...prev,
+      followUps: [...prev.followUps, { date: '', notes: '' }],
+    }));
+  };
+
+  const removeFollowUp = (index) => {
+    const newFollowUps = formData.followUps.filter((_, i) => i !== index);
+    setFormData(prev => ({ ...prev, followUps: newFollowUps }));
   };
 
   const handleImageChange = (e) => {
@@ -142,6 +162,17 @@ const CaseEntryForm = () => {
       <input type="file" accept="image/*" onChange={handleImageChange} />
       {formData.faceImagePreview && <img src={formData.faceImagePreview} alt="Preview" style={{ width: 150, height: 150, marginTop: 10 }} />}
       <br /><br />
+
+      <h2>8. Follow-Ups</h2>
+      {formData.followUps.map((item, index) => (
+        <div key={index} style={{ border: '1px dashed #aaa', padding: 10, marginBottom: 10 }}>
+          <label>Date: <input type="date" name="date" value={item.date} onChange={(e) => handleFollowUpChange(index, e)} /></label><br />
+          <label>Notes: <textarea name="notes" value={item.notes} onChange={(e) => handleFollowUpChange(index, e)} rows={2} /></label><br />
+          {formData.followUps.length > 1 && <button type="button" onClick={() => removeFollowUp(index)} style={{ color: 'red' }}>Remove</button>}
+        </div>
+      ))}
+      <button type="button" onClick={addFollowUp}>+ Add Follow-Up</button>
+      <hr />
 
       <button type="submit">Submit Case</button>
     </form>
