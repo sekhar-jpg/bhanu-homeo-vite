@@ -9,36 +9,43 @@ const PrescriptionDetails = ({ data = {}, onChange }) => {
   };
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: '15px', marginBottom: '20px' }}>
-      <h2 style={{ borderBottom: '1px solid #000' }}>💊 ఔషధ వివరాలు (Prescription Details)</h2>
-
-      <label>ఔషధం / Medicine Name:</label>
+    <div style={{ marginTop: 20 }}>
+      <h3>Prescription Details / ఔషధ వివరాలు</h3>
+      <label>Medicine Name:</label>
       <input
         type="text"
-        name="medicineName"
-        value={data.medicineName || ''}
+        name="medicine"
+        value={data.medicine || ''}
         onChange={handleInputChange}
-        placeholder="ఔషధం పేరు"
-        style={{ width: '100%', marginBottom: '10px' }}
+        placeholder="Enter medicine name"
+        style={{ width: '100%', padding: 8, marginBottom: 10 }}
       />
-
-      <label>మాత్ర & పద్ధతి / Dose & Method:</label>
-      <textarea
-        name="doseMethod"
-        value={data.doseMethod || ''}
-        onChange={handleInputChange}
-        placeholder="మాత్ర & పద్ధతి"
-        style={{ width: '100%', marginBottom: '10px' }}
-      />
-
-      <label>మళ్ళీ ఇవ్వాలి / Repeat:</label>
+      <label>Potency:</label>
       <input
         type="text"
-        name="repeat"
-        value={data.repeat || ''}
+        name="potency"
+        value={data.potency || ''}
         onChange={handleInputChange}
-        placeholder="రిపీట్ వివరాలు"
-        style={{ width: '100%', marginBottom: '10px' }}
+        placeholder="Enter potency (e.g., 30C)"
+        style={{ width: '100%', padding: 8, marginBottom: 10 }}
+      />
+      <label>Dose:</label>
+      <input
+        type="text"
+        name="dose"
+        value={data.dose || ''}
+        onChange={handleInputChange}
+        placeholder="Enter dose"
+        style={{ width: '100%', padding: 8, marginBottom: 10 }}
+      />
+      <label>Repetition:</label>
+      <input
+        type="text"
+        name="repetition"
+        value={data.repetition || ''}
+        onChange={handleInputChange}
+        placeholder="Enter repetition frequency"
+        style={{ width: '100%', padding: 8 }}
       />
     </div>
   );
