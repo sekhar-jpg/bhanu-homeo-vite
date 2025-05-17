@@ -1,7 +1,6 @@
 import React from 'react';
 
 const PatientInfo = ({ data = {}, onChange }) => {
-
   const handleInputChange = (e) => {
     onChange({
       ...data,
@@ -10,10 +9,10 @@ const PatientInfo = ({ data = {}, onChange }) => {
   };
 
   return (
-    <div>
-      <h2>👤 Patient Information</h2>
+    <div style={{ marginBottom: 20, padding: 16, border: '1px solid #ccc', borderRadius: 8 }}>
+      <h2>Patient Information</h2>
 
-      <label>Patient Name / పేరు:</label>
+      <label>Patient Name:</label>
       <input
         type="text"
         name="name"
@@ -22,7 +21,7 @@ const PatientInfo = ({ data = {}, onChange }) => {
         placeholder="Enter patient name"
       />
 
-      <label>Age / వయస్సు:</label>
+      <label>Age:</label>
       <input
         type="number"
         name="age"
@@ -31,15 +30,15 @@ const PatientInfo = ({ data = {}, onChange }) => {
         placeholder="Enter age"
       />
 
-      <label>Gender / లింగం:</label>
+      <label>Gender:</label>
       <select name="gender" value={data.gender || ''} onChange={handleInputChange}>
         <option value="">Select gender</option>
-        <option value="Male">Male / పురుషుడు</option>
-        <option value="Female">Female / స్త్రీ</option>
-        <option value="Other">Other / ఇతరులు</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
       </select>
 
-      <label>Phone Number / ఫోన్ నెంబర్:</label>
+      <label>Phone Number:</label>
       <input
         type="tel"
         name="phone"
@@ -48,7 +47,7 @@ const PatientInfo = ({ data = {}, onChange }) => {
         placeholder="Enter phone number"
       />
 
-      <label>Address / చిరునామా:</label>
+      <label>Address:</label>
       <textarea
         name="address"
         value={data.address || ''}
@@ -56,7 +55,7 @@ const PatientInfo = ({ data = {}, onChange }) => {
         placeholder="Enter address"
       />
 
-      <label>Date / తేదీ:</label>
+      <label>Date:</label>
       <input
         type="date"
         name="date"
