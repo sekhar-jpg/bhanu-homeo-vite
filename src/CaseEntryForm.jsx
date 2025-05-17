@@ -1,98 +1,54 @@
 import React, { useState } from 'react';
-import './CaseEntryForm.css'; // CSS file for styling
+import PatientInfo from './PatientInfo';
+import ChiefComplaints from './ChiefComplaints';
+import PastHistory from './PastHistory';
+import FamilyHistory from './FamilyHistory';
+import PersonalHistory from './PersonalHistory';
+import MentalGenerals from './MentalGenerals';
+import MiasmaticDiagnosis from './MiasmaticDiagnosis';
+import ClinicalDiagnosis from './ClinicalDiagnosis';
+import PrescriptionDetails from './PrescriptionDetails';
 
 const CaseEntryForm = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    gender: '',
-    contact: '',
-    mind: '',
-    generals: '',
-    thermal: '',
-    thirst: '',
-    cravings: '',
-    aversions: '',
-    modalities: '',
-    generalsModalities: '',
-    pastHistory: '',
-    familyHistory: '',
-    diagnosis: '',
-    remedy: '',
-    followUpDate: '',
+    patientInfo: {},
+    chiefComplaints: {},
+    pastHistory: {},
+    familyHistory: {},
+    personalHistory: {},
+    mentalGenerals: {},
+    miasmaticDiagnosis: {},
+    clinicalDiagnosis: {},
+    prescriptionDetails: {}
   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const updateSection = (section, data) => {
+    setFormData(prev => ({
+      ...prev,
+      [section]: data
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Submit logic here
+    console.log('Submitting full case data:', formData);
+    // Your submit logic here
   };
 
   return (
-    <div className="case-form-container">
-      <h2>📝 Bhanu Homeopathy Case Entry</h2>
-      <form onSubmit={handleSubmit} className="case-form">
-        <label>Patient Name</label>
-        <input name="name" onChange={handleChange} />
+    <form onSubmit={handleSubmit}>
+      <PatientInfo data={formData.patientInfo} onChange={data => updateSection('patientInfo', data)} />
+      <ChiefComplaints data={formData.chiefComplaints} onChange={data => updateSection('chiefComplaints', data)} />
+      <PastHistory data={formData.pastHistory} onChange={data => updateSection('pastHistory', data)} />
+      <FamilyHistory data={formData.familyHistory} onChange={data => updateSection('familyHistory', data)} />
+      <PersonalHistory data={formData.personalHistory} onChange={data => updateSection('personalHistory', data)} />
+      <MentalGenerals data={formData.mentalGenerals} onChange={data => updateSection('mentalGenerals', data)} />
+      <MiasmaticDiagnosis data={formData.miasmaticDiagnosis} onChange={data => updateSection('miasmaticDiagnosis', data)} />
+      <ClinicalDiagnosis data={formData.clinicalDiagnosis} onChange={data => updateSection('clinicalDiagnosis', data)} />
+      <PrescriptionDetails data={formData.prescriptionDetails} onChange={data => updateSection('prescriptionDetails', data)} />
 
-        <label>Age</label>
-        <input name="age" onChange={handleChange} />
-
-        <label>Gender</label>
-        <input name="gender" onChange={handleChange} />
-
-        <label>Contact Number</label>
-        <input name="contact" onChange={handleChange} />
-
-        <label>మనోవ్యవస్థ</label>
-        <textarea name="mind" onChange={handleChange} />
-
-        <label>సాధారణ లక్షణాలు</label>
-        <textarea name="generals" onChange={handleChange} />
-
-        <label>ఉష్ణత తత్వం</label>
-        <input name="thermal" onChange={handleChange} />
-
-        <label>దాహం</label>
-        <input name="thirst" onChange={handleChange} />
-
-        <label>ఇష్టపడే పదార్థాలు</label>
-        <input name="cravings" onChange={handleChange} />
-
-        <label>ద్వేషించేవి</label>
-        <input name="aversions" onChange={handleChange} />
-
-        <label>మోడాలిటీస్ (Better/Worse)</label>
-        <textarea name="modalities" onChange={handleChange} />
-
-        <label>సాధారణ మోడాలిటీస్</label>
-        <textarea name="generalsModalities" onChange={handleChange} />
-
-        <label>గత చరిత్ర</label>
-        <textarea name="pastHistory" onChange={handleChange} />
-
-        <label>కుటుంబ చరిత్ర</label>
-        <textarea name="familyHistory" onChange={handleChange} />
-
-        <label>రోగ నిర్ధారణ</label>
-        <input name="diagnosis" onChange={handleChange} />
-
-        <label>ఔషధం</label>
-        <input name="remedy" onChange={handleChange} />
-
-        <label>Follow-Up Date (dd/mm/yyyy)</label>
-        <input type="date" name="followUpDate" onChange={handleChange} />
-
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+      <button type="submit">Submit Case</button>
+    </form>
   );
 };
 
