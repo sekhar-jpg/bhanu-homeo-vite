@@ -1,80 +1,81 @@
-import React, { useState } from 'react';
-import PatientInfo from './PatientInfo';
-import ChiefComplaints from './ChiefComplaints';
-import PastHistory from './PastHistory';
-import FamilyHistory from './FamilyHistory';
-import PersonalHistory from './PersonalHistory';
-import MentalGenerals from './MentalGenerals';
-import MiasmaticDiagnosis from './MiasmaticDiagnosis';
-import ClinicalDiagnosis from './ClinicalDiagnosis';
-import DoctorObservations from './DoctorObservations';
-import PrescriptionDetails from './PrescriptionDetails';
-import FaceImageUpload from './FaceImageUpload';
+// CaseEntryForm.jsx
+import React, { useState } from "react";
+import PatientInfo from "./PatientInfo";
+import ChiefComplaints from "./ChiefComplaints";
+import PastHistory from "./PastHistory";
+import FamilyHistory from "./FamilyHistory";
+import PersonalHistory from "./PersonalHistory";
+import MentalGenerals from "./MentalGenerals";
+import MiasmaticDiagnosis from "./MiasmaticDiagnosis";
+import ClinicalDiagnosis from "./ClinicalDiagnosis";
+import DoctorObservations from "./DoctorObservations";
+import PrescriptionDetails from "./PrescriptionDetails";
+import FaceImageUpload from "./FaceImageUpload";
+import axios from "axios";
 
-const CaseEntryForm = () => {
-  const [patientInfo, setPatientInfo] = useState({});
-  const [chiefComplaints, setChiefComplaints] = useState({});
-  const [pastHistory, setPastHistory] = useState({});
-  const [familyHistory, setFamilyHistory] = useState({});
-  const [personalHistory, setPersonalHistory] = useState({});
-  const [mentalGenerals, setMentalGenerals] = useState({});
-  const [miasmaticDiagnosis, setMiasmaticDiagnosis] = useState({});
-  const [clinicalDiagnosis, setClinicalDiagnosis] = useState({});
-  const [doctorObservations, setDoctorObservations] = useState({});
-  const [prescriptionDetails, setPrescriptionDetails] = useState({});
-  const [faceImage, setFaceImage] = useState(null);
+const CaseEntryForm = ({ onCaseSubmitted }) => {
+  const [formData, setFormData] = useState({
+    patientInfo: {},
+    chiefComplaints: [],
+    pastHistory: "",
+    familyHistory: "",
+    personalHistory: "",
+    mentalGenerals: "",
+    miasmaticDiagnosis: "",
+    clinicalDiagnosis: "",
+    doctorObservations: "",
+    prescriptionDetails: {},
+    faceImage: null,
+  });
+
+  const handleFormChange = (section, data) => {
+    setFormData((prev) => ({
+      ...prev,
+      [section]: data,
+    }));
+  };
+
+  const handleImageChange = (imageFile) => {
+    setFormData((prev) => ({
+      ...prev,
+      faceImage: imageFile,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    formData.append('patientInfo', JSON.stringify(patientInfo));
-    formData.append('chiefComplaints', JSON.stringify(chiefComplaints));
-    formData.append('pastHistory', JSON.stringify(pastHistory));
-    formData.append('familyHistory', JSON.stringify(familyHistory));
-    formData.append('personalHistory', JSON.stringify(personalHistory));
-    formData.append('mentalGenerals', JSON.stringify(mentalGenerals));
-    formData.append('miasmaticDiagnosis', JSON.stringify(miasmaticDiagnosis));
-    formData.append('clinicalDiagnosis', JSON.stringify(clinicalDiagnosis));
-    formData.append('doctorObservations', JSON.stringify(doctorObservations));
-    formData.append('prescriptionDetails', JSON.stringify(prescriptionDetails));
-    if (faceImage) {
-      formData.append('faceImage', faceImage);
-    }
-
-    try {
-      const response = await fetch('https://your-backend-url/submit-case', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert('✅ Case submitted successfully');
+    const submissionData = new FormData();
+    for (const key in formData) {
+      if (key === "faceImage" && formData[key]) {
+        submissionData.append("faceImage", formData[key]);
       } else {
-        alert(`❌ Failed: ${result.message}`);
+        submissionData.append(key, JSON.stringify(formData[key]));
       }
+    }
+    try {
+      await axios.post("/api/cases", submissionData);
+      alert("Case submitted successfully");
+      if(onCaseSubmitted) onCaseSubmitted(); // to refresh list after submit
     } catch (error) {
-      console.error('❌ Error submitting case:', error);
-      alert('❌ Error submitting case');
+      console.error(error);
+      alert("Failed to submit case");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ maxWidth: 700, margin: "auto" }}>
       <h2>Homeopathy Case Sheet</h2>
-      <PatientInfo onChange={setPatientInfo} />
-      <ChiefComplaints onChange={setChiefComplaints} />
-      <PastHistory onChange={setPastHistory} />
-      <FamilyHistory onChange={setFamilyHistory} />
-      <PersonalHistory onChange={setPersonalHistory} />
-      <MentalGenerals onChange={setMentalGenerals} />
-      <MiasmaticDiagnosis onChange={setMiasmaticDiagnosis} />
-      <ClinicalDiagnosis onChange={setClinicalDiagnosis} />
-      <DoctorObservations onChange={setDoctorObservations} />
-      <PrescriptionDetails onChange={setPrescriptionDetails} />
-      <FaceImageUpload onChange={setFaceImage} />
-
+      <PatientInfo onChange={(data) => handleFormChange("patientInfo", data)} />
+      <ChiefComplaints onChange={(data) => handleFormChange("chiefComplaints", data)} />
+      <PastHistory onChange={(data) => handleFormChange("pastHistory", data)} />
+      <FamilyHistory onChange={(data) => handleFormChange("familyHistory", data)} />
+      <PersonalHistory onChange={(data) => handleFormChange("personalHistory", data)} />
+      <MentalGenerals onChange={(data) => handleFormChange("mentalGenerals", data)} />
+      <MiasmaticDiagnosis onChange={(data) => handleFormChange("miasmaticDiagnosis", data)} />
+      <ClinicalDiagnosis onChange={(data) => handleFormChange("clinicalDiagnosis", data)} />
+      <DoctorObservations onChange={(data) => handleFormChange("doctorObservations", data)} />
+      <PrescriptionDetails onChange={(data) => handleFormChange("prescriptionDetails", data)} />
+      <FaceImageUpload onChange={handleImageChange} />
       <button type="submit">Submit Case</button>
     </form>
   );
