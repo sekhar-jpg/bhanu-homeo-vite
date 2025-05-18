@@ -5,6 +5,7 @@ import CaseEntryForm from "./CaseEntryForm";
 function App() {
   const [cases, setCases] = useState([]);
   const [reminders, setReminders] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchCases = async () => {
     const res = await axios.get("https://bhanu-homeo-vite-backend.onrender.com/all-cases");
@@ -42,12 +43,34 @@ function App() {
     }
   };
 
+  const editCase = async (caseData) => {
+    const updated = {
+      patientName: prompt("Patient Name:", caseData.patientName),
+      age: prompt("Age:", caseData.age),
+      gender: prompt("Gender:", caseData.gender),
+      phone: prompt("Phone:", caseData.phone),
+      chiefComplaints: prompt("Chief Complaints:", caseData.chiefComplaints),
+      prescription: prompt("Prescription:", caseData.prescription),
+    };
+    await axios.put(`https://bhanu-homeo-vite-backend.onrender.com/edit-case/${caseData._id}`, updated);
+    fetchCases();
+  };
+
+  const deleteCase = async (caseId) => {
+    if (window.confirm("Are you sure you want to delete this case?")) {
+      await axios.delete(`https://bhanu-homeo-vite-backend.onrender.com/delete-case/${caseId}`);
+      fetchCases();
+      fetchReminders();
+    }
+  };
+
   useEffect(() => {
     fetchCases();
     fetchReminders();
   }, []);
 
   const todayDate = new Date().toISOString().split("T")[0];
+  const filteredCases = cases.filter(c => c.patientName.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div style={{ padding: "20px" }}>
@@ -76,10 +99,19 @@ function App() {
         ))
       )}
 
-      {/* All Cases List */}
+      {/* Search Field */}
       <hr />
+      <input
+        type="text"
+        placeholder="Search by patient name"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ padding: "5px", width: "100%", marginBottom: "20px" }}
+      />
+
+      {/* All Cases List */}
       <h2>All Cases</h2>
-      {cases.map((c, i) => (
+      {filteredCases.map((c, i) => (
         <div key={i} style={{ border: "1px solid gray", margin: "10px", padding: "10px" }}>
           <h4>{c.patientName} ({c.age} / {c.gender})</h4>
           <p>Phone: {c.phone}</p>
@@ -87,6 +119,8 @@ function App() {
           <p>Prescription: {c.prescription}</p>
 
           <button onClick={() => addFollowUp(c._id)}>Add Follow-up</button>
+          <button onClick={() => editCase(c)} style={{ marginLeft: "10px" }}>Edit Case</button>
+          <button onClick={() => deleteCase(c._id)} style={{ marginLeft: "5px" }}>Delete Case</button>
 
           <h5>Follow-ups:</h5>
           <ul>
