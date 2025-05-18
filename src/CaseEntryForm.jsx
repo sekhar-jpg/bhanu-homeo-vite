@@ -1,112 +1,83 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import PatientInfo from './PatientInfo';
+import ChiefComplaints from './ChiefComplaints';
+import PastHistory from './PastHistory';
+import FamilyHistory from './FamilyHistory';
+import PersonalHistory from './PersonalHistory';
+import MentalGenerals from './MentalGenerals';
+import MiasmaticDiagnosis from './MiasmaticDiagnosis';
+import ClinicalDiagnosis from './ClinicalDiagnosis';
+import DoctorObservations from './DoctorObservations';
+import PrescriptionDetails from './PrescriptionDetails';
+import FaceImageUpload from './FaceImageUpload';
 
-const CaseSheetForm = () => {
-  const [form, setForm] = useState({
-    patientInfo: {},
-    chiefComplaints: {},
-    pastHistory: {},
-    familyHistory: {},
-    personalHistory: {},
-    mentalGenerals: {},
-    miasmaticDiagnosis: {},
-    clinicalDiagnosis: {},
-    doctorObservations: {},
-    prescriptionDetails: {},
-  });
+const CaseEntryForm = () => {
+  const [patientInfo, setPatientInfo] = useState({});
+  const [chiefComplaints, setChiefComplaints] = useState({});
+  const [pastHistory, setPastHistory] = useState({});
+  const [familyHistory, setFamilyHistory] = useState({});
+  const [personalHistory, setPersonalHistory] = useState({});
+  const [mentalGenerals, setMentalGenerals] = useState({});
+  const [miasmaticDiagnosis, setMiasmaticDiagnosis] = useState({});
+  const [clinicalDiagnosis, setClinicalDiagnosis] = useState({});
+  const [doctorObservations, setDoctorObservations] = useState({});
+  const [prescriptionDetails, setPrescriptionDetails] = useState({});
   const [faceImage, setFaceImage] = useState(null);
-
-  const handleChange = (section, field, value) => {
-    setForm((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value,
-      },
-    }));
-  };
-
-  const handleImageChange = (e) => {
-    setFaceImage(e.target.files[0]);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('faceImage', faceImage);
-
-    // Append all JSON sections as stringified data
-    Object.keys(form).forEach((section) => {
-      formData.append(section, JSON.stringify(form[section]));
-    });
+    formData.append('patientInfo', JSON.stringify(patientInfo));
+    formData.append('chiefComplaints', JSON.stringify(chiefComplaints));
+    formData.append('pastHistory', JSON.stringify(pastHistory));
+    formData.append('familyHistory', JSON.stringify(familyHistory));
+    formData.append('personalHistory', JSON.stringify(personalHistory));
+    formData.append('mentalGenerals', JSON.stringify(mentalGenerals));
+    formData.append('miasmaticDiagnosis', JSON.stringify(miasmaticDiagnosis));
+    formData.append('clinicalDiagnosis', JSON.stringify(clinicalDiagnosis));
+    formData.append('doctorObservations', JSON.stringify(doctorObservations));
+    formData.append('prescriptionDetails', JSON.stringify(prescriptionDetails));
+    if (faceImage) {
+      formData.append('faceImage', faceImage);
+    }
 
     try {
-      const res = await axios.post('https://your-backend-url.com/submit-case', formData);
-      alert(res.data.message);
-    } catch (err) {
-      console.error('❌ Submission Error:', err);
-      alert('Failed to submit case');
+      const response = await fetch('https://your-backend-url/submit-case', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert('✅ Case submitted successfully');
+      } else {
+        alert(`❌ Failed: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('❌ Error submitting case:', error);
+      alert('❌ Error submitting case');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '500px', margin: 'auto' }}>
+    <form onSubmit={handleSubmit}>
       <h2>Homeopathy Case Sheet</h2>
+      <PatientInfo onChange={setPatientInfo} />
+      <ChiefComplaints onChange={setChiefComplaints} />
+      <PastHistory onChange={setPastHistory} />
+      <FamilyHistory onChange={setFamilyHistory} />
+      <PersonalHistory onChange={setPersonalHistory} />
+      <MentalGenerals onChange={setMentalGenerals} />
+      <MiasmaticDiagnosis onChange={setMiasmaticDiagnosis} />
+      <ClinicalDiagnosis onChange={setClinicalDiagnosis} />
+      <DoctorObservations onChange={setDoctorObservations} />
+      <PrescriptionDetails onChange={setPrescriptionDetails} />
+      <FaceImageUpload onChange={setFaceImage} />
 
-      {/* Patient Info */}
-      <label>Patient Name</label>
-      <input type="text" onChange={(e) => handleChange('patientInfo', 'name', e.target.value)} />
-
-      <label>Age</label>
-      <input type="text" onChange={(e) => handleChange('patientInfo', 'age', e.target.value)} />
-
-      <label>Gender</label>
-      <input type="text" onChange={(e) => handleChange('patientInfo', 'gender', e.target.value)} />
-
-      {/* Chief Complaints */}
-      <label>Chief Complaint</label>
-      <input type="text" onChange={(e) => handleChange('chiefComplaints', 'complaint', e.target.value)} />
-
-      {/* Past History */}
-      <label>Past History</label>
-      <input type="text" onChange={(e) => handleChange('pastHistory', 'history', e.target.value)} />
-
-      {/* Family History */}
-      <label>Family History</label>
-      <input type="text" onChange={(e) => handleChange('familyHistory', 'history', e.target.value)} />
-
-      {/* Personal History */}
-      <label>Personal History</label>
-      <input type="text" onChange={(e) => handleChange('personalHistory', 'details', e.target.value)} />
-
-      {/* Mental Generals */}
-      <label>Mental Symptoms</label>
-      <input type="text" onChange={(e) => handleChange('mentalGenerals', 'mind', e.target.value)} />
-
-      {/* Miasmatic Diagnosis */}
-      <label>Miasm</label>
-      <input type="text" onChange={(e) => handleChange('miasmaticDiagnosis', 'type', e.target.value)} />
-
-      {/* Clinical Diagnosis */}
-      <label>Clinical Diagnosis</label>
-      <input type="text" onChange={(e) => handleChange('clinicalDiagnosis', 'diagnosis', e.target.value)} />
-
-      {/* Doctor Observations */}
-      <label>Observations</label>
-      <input type="text" onChange={(e) => handleChange('doctorObservations', 'notes', e.target.value)} />
-
-      {/* Prescription */}
-      <label>Prescription</label>
-      <input type="text" onChange={(e) => handleChange('prescriptionDetails', 'remedy', e.target.value)} />
-
-      {/* Face Image */}
-      <label>Upload Face Image</label>
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-
-      <button type="submit" style={{ marginTop: '20px' }}>Submit Case</button>
+      <button type="submit">Submit Case</button>
     </form>
   );
 };
 
-export default CaseSheetForm;
+export default CaseEntryForm;
