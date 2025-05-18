@@ -47,6 +47,8 @@ function App() {
     fetchReminders();
   }, []);
 
+  const todayDate = new Date().toISOString().split("T")[0];
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Bhanu Homeopathy</h1>
@@ -65,7 +67,7 @@ function App() {
             <p><strong>{c.patientName}</strong> - {c.phone}</p>
             <ul>
               {c.followUps
-                .filter(f => f.date === new Date().toISOString().split("T")[0])
+                .filter(f => f.date === todayDate)
                 .map(f => (
                   <li key={f._id}>{f.date}: {f.notes}</li>
                 ))}
@@ -91,8 +93,8 @@ function App() {
             {c.followUps.map((f) => (
               <li key={f._id}>
                 {f.date} - {f.notes}
-                <button onClick={() => editFollowUp(c._id, f)}>Edit</button>
-                <button onClick={() => deleteFollowUp(c._id, f._id)}>Delete</button>
+                <button onClick={() => editFollowUp(c._id, f)} style={{ marginLeft: "10px" }}>Edit</button>
+                <button onClick={() => deleteFollowUp(c._id, f._id)} style={{ marginLeft: "5px" }}>Delete</button>
               </li>
             ))}
           </ul>
