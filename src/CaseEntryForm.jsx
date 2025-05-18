@@ -1,20 +1,8 @@
 import React, { useState } from 'react';
-import PatientInfo from './PatientInfo';
-import ChiefComplaints from './ChiefComplaints';
-import PastHistory from './PastHistory';
-import FamilyHistory from './FamilyHistory';
-import PersonalHistory from './PersonalHistory';
-import MentalGenerals from './MentalGenerals';
-import MiasmaticDiagnosis from './MiasmaticDiagnosis';
-import ClinicalDiagnosis from './ClinicalDiagnosis';
-import DoctorObservations from './DoctorObservations';
-import FaceImageUpload from './FaceImageUpload';
-import PrescriptionDetails from './PrescriptionDetails';
+import axios from 'axios';
 
-const BACKEND_URL = 'https://bhanu-homeo-vite-backend.onrender.com';
-
-const CaseEntryForm = () => {
-  const [formData, setFormData] = useState({
+const CaseSheetForm = () => {
+  const [form, setForm] = useState({
     patientInfo: {},
     chiefComplaints: {},
     pastHistory: {},
@@ -24,90 +12,101 @@ const CaseEntryForm = () => {
     miasmaticDiagnosis: {},
     clinicalDiagnosis: {},
     doctorObservations: {},
-    faceImage: null,
     prescriptionDetails: {},
   });
+  const [faceImage, setFaceImage] = useState(null);
 
-  const updateSection = (section, data) => {
-    setFormData((prev) => ({
+  const handleChange = (section, field, value) => {
+    setForm((prev) => ({
       ...prev,
-      [section]: data,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
     }));
   };
 
-  const handleImageChange = (imageFile) => {
-    setFormData((prev) => ({
-      ...prev,
-      faceImage: imageFile,
-    }));
+  const handleImageChange = (e) => {
+    setFaceImage(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append('faceImage', faceImage);
+
+    // Append all JSON sections as stringified data
+    Object.keys(form).forEach((section) => {
+      formData.append(section, JSON.stringify(form[section]));
+    });
+
     try {
-      const formDataToSend = new FormData();
-
-      if (formData.faceImage) {
-        formDataToSend.append('faceImage', formData.faceImage);
-      }
-
-      for (const section in formData) {
-        if (section !== 'faceImage') {
-          formDataToSend.append(section, JSON.stringify(formData[section]));
-        }
-      }
-
-      const response = await fetch(`${BACKEND_URL}/submit-case`, {
-        method: 'POST',
-        body: formDataToSend,
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        alert('Case submitted successfully!');
-        // Reset form after successful submission
-        setFormData({
-          patientInfo: {},
-          chiefComplaints: {},
-          pastHistory: {},
-          familyHistory: {},
-          personalHistory: {},
-          mentalGenerals: {},
-          miasmaticDiagnosis: {},
-          clinicalDiagnosis: {},
-          doctorObservations: {},
-          faceImage: null,
-          prescriptionDetails: {},
-        });
-      } else {
-        alert('Submission failed: ' + (result.message || 'Unknown error'));
-      }
-    } catch (error) {
-      alert('Error submitting case: ' + error.message);
+      const res = await axios.post('https://your-backend-url.com/submit-case', formData);
+      alert(res.data.message);
+    } catch (err) {
+      console.error('❌ Submission Error:', err);
+      alert('Failed to submit case');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 900, margin: 'auto', padding: 20 }}>
-      <PatientInfo data={formData.patientInfo} onChange={(data) => updateSection('patientInfo', data)} />
-      <ChiefComplaints data={formData.chiefComplaints} onChange={(data) => updateSection('chiefComplaints', data)} />
-      <PastHistory data={formData.pastHistory} onChange={(data) => updateSection('pastHistory', data)} />
-      <FamilyHistory data={formData.familyHistory} onChange={(data) => updateSection('familyHistory', data)} />
-      <PersonalHistory data={formData.personalHistory} onChange={(data) => updateSection('personalHistory', data)} />
-      <MentalGenerals data={formData.mentalGenerals} onChange={(data) => updateSection('mentalGenerals', data)} />
-      <MiasmaticDiagnosis data={formData.miasmaticDiagnosis} onChange={(data) => updateSection('miasmaticDiagnosis', data)} />
-      <ClinicalDiagnosis data={formData.clinicalDiagnosis} onChange={(data) => updateSection('clinicalDiagnosis', data)} />
-      <DoctorObservations data={formData.doctorObservations} onChange={(data) => updateSection('doctorObservations', data)} />
-      <FaceImageUpload onImageChange={handleImageChange} />
-      <PrescriptionDetails data={formData.prescriptionDetails} onChange={(data) => updateSection('prescriptionDetails', data)} />
+    <form onSubmit={handleSubmit} style={{ maxWidth: '500px', margin: 'auto' }}>
+      <h2>Homeopathy Case Sheet</h2>
 
-      <button type="submit" style={{ marginTop: 20, padding: '12px 24px', fontSize: '16px' }}>
-        Submit Case
-      </button>
+      {/* Patient Info */}
+      <label>Patient Name</label>
+      <input type="text" onChange={(e) => handleChange('patientInfo', 'name', e.target.value)} />
+
+      <label>Age</label>
+      <input type="text" onChange={(e) => handleChange('patientInfo', 'age', e.target.value)} />
+
+      <label>Gender</label>
+      <input type="text" onChange={(e) => handleChange('patientInfo', 'gender', e.target.value)} />
+
+      {/* Chief Complaints */}
+      <label>Chief Complaint</label>
+      <input type="text" onChange={(e) => handleChange('chiefComplaints', 'complaint', e.target.value)} />
+
+      {/* Past History */}
+      <label>Past History</label>
+      <input type="text" onChange={(e) => handleChange('pastHistory', 'history', e.target.value)} />
+
+      {/* Family History */}
+      <label>Family History</label>
+      <input type="text" onChange={(e) => handleChange('familyHistory', 'history', e.target.value)} />
+
+      {/* Personal History */}
+      <label>Personal History</label>
+      <input type="text" onChange={(e) => handleChange('personalHistory', 'details', e.target.value)} />
+
+      {/* Mental Generals */}
+      <label>Mental Symptoms</label>
+      <input type="text" onChange={(e) => handleChange('mentalGenerals', 'mind', e.target.value)} />
+
+      {/* Miasmatic Diagnosis */}
+      <label>Miasm</label>
+      <input type="text" onChange={(e) => handleChange('miasmaticDiagnosis', 'type', e.target.value)} />
+
+      {/* Clinical Diagnosis */}
+      <label>Clinical Diagnosis</label>
+      <input type="text" onChange={(e) => handleChange('clinicalDiagnosis', 'diagnosis', e.target.value)} />
+
+      {/* Doctor Observations */}
+      <label>Observations</label>
+      <input type="text" onChange={(e) => handleChange('doctorObservations', 'notes', e.target.value)} />
+
+      {/* Prescription */}
+      <label>Prescription</label>
+      <input type="text" onChange={(e) => handleChange('prescriptionDetails', 'remedy', e.target.value)} />
+
+      {/* Face Image */}
+      <label>Upload Face Image</label>
+      <input type="file" accept="image/*" onChange={handleImageChange} />
+
+      <button type="submit" style={{ marginTop: '20px' }}>Submit Case</button>
     </form>
   );
 };
 
-export default CaseEntryForm;
+export default CaseSheetForm;
